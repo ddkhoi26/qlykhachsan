@@ -1,0 +1,142 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BUS;
+
+namespace BTL_QLKS
+{
+    public partial class GUI_QLHD : Form
+    {
+        public GUI_QLHD()
+        {
+            InitializeComponent();
+        }
+        HoaDon hd = new HoaDon();
+        string ma;
+        public void Hienthi()
+        {
+            DataTable dt = new DataTable();
+            dt = hd.hienthi_hd();
+            DGV_hd.DataSource = dt;
+        }
+        private void GUI_QLHD_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'dataSet1.t_kh' table. You can move, or remove it, as needed.
+            this.t_khTableAdapter.Fill(this.dataSet1.t_kh);
+            // TODO: This line of code loads data into the 'dataSet1.t_dv' table. You can move, or remove it, as needed.
+            this.t_dvTableAdapter.Fill(this.dataSet1.t_dv);
+            // TODO: This line of code loads data into the 'dataSet1.t_phong' table. You can move, or remove it, as needed.
+            this.t_phongTableAdapter.Fill(this.dataSet1.t_phong);
+            Hienthi();
+        }
+        private void btn_them_Click(object sender, EventArgs e)
+        {
+            if (txtmahd.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã!");
+                txtmahd.Focus();
+            }
+            else
+            {
+                try
+                {
+                    hd.InsertHD(this.txtmahd.Text, this.cbkh.Text, this.cbphong.Text, this.cbdv.Text, this.txtthanhtien.Text);
+                    MessageBox.Show("Thêm thành công");
+                    Hienthi();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+        private void btn_sua_Click(object sender, EventArgs e)
+        {
+            if (txtmahd.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã!");
+                txtmahd.Focus();
+            }
+            else
+            {
+                try
+                {
+                    hd.UpdateHD(this.txtmahd.Text, this.cbkh.Text, this.cbphong.Text, this.cbdv.Text, this.txtthanhtien.Text, this.ma);
+                    MessageBox.Show("Sửa thành công");
+                    Hienthi();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+        private void btn_xoa_Click(object sender, EventArgs e)
+        {
+            if (txtmahd.Text == "")
+            {
+                MessageBox.Show("Bạn chưa Mã chức vụ!");
+                txtmahd.Focus();
+            }
+            else
+            {
+                try
+                {
+if (MessageBox.Show("Bạn có chắc chắn xóa không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        hd.DeleteHD(this.txtmahd.Text);
+                        MessageBox.Show("Xóa thành công");
+                        Hienthi();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lõi: " + ex);
+                }
+            }
+        }
+        private void btn_thoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        private void btn_tim_Click(object sender, EventArgs e)
+        {
+            if (txtkey.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã  cần tìm");
+                Hienthi();
+            }
+            else
+            {
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt = hd.TimHD(this.txtkey.Text);
+                    txtkey.Clear();
+                    DGV_hd.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi" + ex);
+                }
+            }
+        }
+        private void DGV_hd_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            int i = e.RowIndex;
+            ma = DGV_hd.Rows[i].Cells[0].Value.ToString();
+            txtmahd.Text = DGV_hd.Rows[i].Cells[0].Value.ToString();
+            cbkh.Text = DGV_hd.Rows[i].Cells[1].Value.ToString();
+            cbphong.Text = DGV_hd.Rows[i].Cells[2].Value.ToString();
+            cbdv.Text = DGV_hd.Rows[i].Cells[3].Value.ToString();
+            txtthanhtien.Text = DGV_hd.Rows[i].Cells[4].Value.ToString();
+        }
+    }
+}
