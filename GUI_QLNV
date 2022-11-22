@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BUS;
+
+namespace BTL_QLKS
+{
+    public partial class GUI_QLNV : Form
+    {
+        public GUI_QLNV()
+        {
+            InitializeComponent();
+        }
+        NhanVien nv = new NhanVien();
+        string ma;
+        public void Hienthi_CB()
+        {
+            DataTable dt = new DataTable();
+            dt = nv.get_load_cv();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                txtcb.Items.Add(dt.Rows[i].Field<string>(0));
+            }
+            dt = nv.hienthi_nv();
+            DGV_nv.DataSource = dt;
+        }
+        private void Reset()
+        {
+            txtmanv.Clear();
+            txttennv.Clear();
+            txtcb.Items.Clear();
+            txtdiachi.Clear();
+            txtsdt.Clear();
+            txtemail.Clear();
+        }
+        private void GUI_QLNV_Load(object sender, EventArgs e)
+        {
+            Hienthi_CB();
+        }
+        private void btn_timkiem_Click(object sender, EventArgs e)
+        {
+            if (txtkey.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã  cần tìm");
+                Hienthi_CB();
+            }
+            else
+            {
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt = nv.TimNV(this.txtkey.Text);
+                    txtkey.Clear();
+                    DGV_nv.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi" + ex);
+                }
+            }
+        }
+        private void btnthem_Click(object sender, EventArgs e)
+        {
+            if (txtmanv.Text == "")
+            {
+                MessageBox.Show("Bạn chưa Mã chức vụ!");
+                txtmanv.Focus();
+            }
+            else
+            {
+                try
+                {
+                    nv.InsertNV(this.txtmanv.Text, this.txttennv.Text, this.txtcb.Text, this.txtdiachi.Text, this.txtsdt.Text, this.txtemail.Text);
+                    MessageBox.Show("Thêm thành công");
+                    Hienthi_CB();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+        private void btnsua_Click(object sender, EventArgs e)
+        {
+            if (txtmanv.Text == "")
+            {
+                MessageBox.Show("Bạn chưa có Mã chức vụ!");
+                txtmanv.Focus();
+            }
+            else
+            {
+                try
+                {
+                    nv.UpdateNV(this.txtmanv.Text, this.txttennv.Text, this.txtcb.Text, this.txtdiachi.Text, this.txtsdt.Text, this.txtemail.Text, this.ma);
+MessageBox.Show("Sửa thành công");
+                    Hienthi_CB();
+                    Reset();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+
+        private void btnxoa_Click(object sender, EventArgs e)
+        {
+            if (txtmanv.Text == "")
+            {
+                MessageBox.Show("Bạn chưa chọn mã!");
+                txtmanv.Focus();
+            }
+            else
+            {
+                try
+                {
+                    if (MessageBox.Show("Bạn có chắc chắn xóa không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        nv.DeleteNV(this.txtmanv.Text);
+                        MessageBox.Show("Xóa thành công");
+                        Reset();
+                        Hienthi_CB();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lõi: " + ex);
+                }
+            }
+        }
+        private void btn_thoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        private void DGV_nv_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            int i = e.RowIndex;
+            ma = DGV_nv.Rows[i].Cells[0].Value.ToString();
+            txtmanv.Text = DGV_nv.Rows[i].Cells[0].Value.ToString();
+            txttennv.Text = DGV_nv.Rows[i].Cells[1].Value.ToString();
+            txtcb.Text = DGV_nv.Rows[i].Cells[2].Value.ToString();
+            txtdiachi.Text = DGV_nv.Rows[i].Cells[3].Value.ToString();
+            txtsdt.Text = DGV_nv.Rows[i].Cells[4].Value.ToString();
+            txtemail.Text = DGV_nv.Rows[i].Cells[5].Value.ToString();
+        }
+    }
+}

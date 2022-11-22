@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using DLA;
+
+namespace BUS
+{
+    public class NhanVien
+    {
+        DataStore da = new DataStore();
+        public DataTable get_load_cv()
+        {
+            string sql = "select tencv from t_cv";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql);
+            return dt;
+        }
+        public DataTable hienthi_nv()
+        {
+            string sql_ht = "select * from t_nv";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql_ht);
+            return dt;
+        }
+        public SqlDataReader Hienthi_nv()
+        {
+            string sql_cb = "select * from t_nv";
+            SqlDataReader dr;
+            dr = da.Get_DR(sql_cb);
+            return dr;
+        }
+        // Xử lý yêu cần thêm dữ liệu
+        public void InsertNV(string manv, string tennv, string cbcv, string diachi, string sdt, string email)
+        {
+            string sql_add = "Insert into t_nv values(N'" + manv + "',N'" + tennv + "',N'" + cbcv + "',N'" + diachi + "',N'" + sdt + "',N'" + email + "')";
+            da.ExecuteNonQuery(sql_add);
+        }
+        public void UpdateNV(string manv, string tennv, string cbcv, string diachi, string sdt, string email, string ma)
+        {
+            string sql_edit = "Update t_nv set manv='" + manv + "',tennv='" + tennv + "',cbcv='" + cbcv + "',diachi='" + diachi + "',sdt='" + sdt + "',email='" + email + "' where manv='" + ma + "'";
+            da.ExecuteNonQuery(sql_edit);
+        }
+        public void DeleteNV(string manv)
+        {
+            string sql_delete = "Delete From t_nv  where manv = '" + manv + "'";
+            da.ExecuteNonQuery(sql_delete);
+        }
+        public DataTable TimNV(string key)
+        {
+            string sql = "SELECT * FROM t_nv WHERE manv LIKE '%" + key + "%'";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql);
+            return dt;
+        }
+    }
+}

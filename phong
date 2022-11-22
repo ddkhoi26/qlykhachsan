@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using DLA;
+
+namespace BUS
+{
+    public class Phong
+    {
+        DataStore da = new DataStore();
+        // Xử lý yêu cần thêm dữ liệu
+        public void InsertPhong(string maphong, string tenphong, string giaphong, string loaiphong)
+        {
+            string sql_add = "insert into t_phong values(N'" + maphong + "',N'" + tenphong + "',N'" + giaphong + "',N'" + loaiphong + "')";
+            da.ExecuteNonQuery(sql_add);
+        }
+        public void UpdatePhong(string maphong, string tenphong, string giaphong, string loaiphong, string ma)
+        {
+            string sql_edit = "Update t_phong set maphong='" + maphong + "',tenphong='" + tenphong + "',giaphong='" + giaphong + "',loaiphong='" + loaiphong + "' where maphong='" + ma + "'";
+            da.ExecuteNonQuery(sql_edit);
+        }
+
+        public void DeletePhong(string maphong)
+        {
+            string sql_delete = "Delete From t_phong where maphong = '" + maphong + "'";
+            da.ExecuteNonQuery(sql_delete);
+        }
+        public DataTable Search(string maphong)
+        {
+            string sql_search = $"Select * from t_phong where maphong = '{ maphong}'";
+            return da.GetTable(sql_search);
+        }
+        public DataTable hienthi_phong()
+        {
+            string sql_ht = "select * from t_phong";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql_ht);
+            return dt;
+        }
+        public SqlDataReader Hienthi_phong()
+        {
+            string sql_cb = "select * from t_phong";
+            SqlDataReader dr;
+            dr = da.Get_DR(sql_cb);
+            return dr;
+        }
+    }
+}

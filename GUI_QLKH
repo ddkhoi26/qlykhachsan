@@ -1,0 +1,147 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BUS;
+
+namespace BTL_QLKS
+{
+    public partial class GUI_QLKH : Form
+    {
+        public GUI_QLKH()
+        {
+            InitializeComponent();
+        }
+        KhachHang kh = new KhachHang();
+        string ma;
+        public void Hienthi()
+        {
+            DataTable dt = new DataTable();
+            dt = kh.HienThi();
+            DGV_kh.DataSource = dt;
+        }
+
+        public void Xoa()
+        {
+            txtmakh.Clear();
+            txttenkh.Clear();
+            txtcmt.Clear();
+            txttuoi.Clear();
+            cbgtinh.Items.Clear();
+            txtdiachi.Clear();
+            txtemail.Clear();
+            txtsdt.Clear();
+            txtmakh.Focus();
+        }
+
+        private void btnthem_Click(object sender, EventArgs e)
+        {
+            if (txtmakh.Text == "")
+            {
+                MessageBox.Show("Chưa nhập mã");
+                txtmakh.Focus();
+            }
+            else
+            {
+                try
+                {
+                    kh.InsertKH(this.txtmakh.Text, this.txttenkh.Text, this.txtcmt.Text, this.txttuoi.Text, this.cbgtinh.Text, this.txtdiachi.Text, this.txtemail.Text, this.txtsdt.Text);
+                    MessageBox.Show("Thêm thành công");
+                    Hienthi();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error" + ex);
+                }
+            }
+        }
+
+        private void DGV_kh_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            int i = e.RowIndex;
+            ma = DGV_kh.Rows[i].Cells[0].Value.ToString();
+            txtmakh.Text = DGV_kh.Rows[i].Cells[0].Value.ToString();
+            txttenkh.Text = DGV_kh.Rows[i].Cells[1].Value.ToString();
+            txtcmt.Text = DGV_kh.Rows[i].Cells[2].Value.ToString();
+            txttuoi.Text = DGV_kh.Rows[i].Cells[3].Value.ToString();
+            cbgtinh.Text = DGV_kh.Rows[i].Cells[4].Value.ToString();
+            txtdiachi.Text = DGV_kh.Rows[i].Cells[5].Value.ToString();
+            txtemail.Text = DGV_kh.Rows[i].Cells[6].Value.ToString();
+            txtsdt.Text = DGV_kh.Rows[i].Cells[7].Value.ToString();
+        }
+
+        private void KH_GUI_Load(object sender, EventArgs e)
+        {
+            Hienthi(); 
+        }
+
+        private void btnsua_Click(object sender, EventArgs e)
+        {
+            if (txtmakh.Text == "")
+            {
+                MessageBox.Show("Chưa nhập mã");
+                txtmakh.Focus();
+            }
+            else
+            {
+                try
+                {
+                    kh.UpdateKH(this.txtmakh.Text, this.txttenkh.Text, this.txtcmt.Text, this.txttuoi.Text, this.cbgtinh.Text, this.txtdiachi.Text, this.txtemail.Text, this.txtsdt.Text, this.ma);
+MessageBox.Show("Sửa thành công");
+                    Hienthi();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error" + ex);
+                }
+            }
+        }
+
+        private void btnxoa_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                kh.DeleteKH(this.txtmakh.Text);
+                MessageBox.Show("Xóa thành công");
+                Hienthi();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error" + ex);
+            }
+        }
+
+        private void btn_timkiem_Click(object sender, EventArgs e)
+        {
+            if (txtkey.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã  cần tìm");
+                Hienthi();
+            }
+            else
+            {
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt = kh.TimKH(this.txtkey.Text);
+                    txtkey.Clear();
+                    DGV_kh.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi" + ex);
+                }
+            }
+        }
+
+        private void btn_thoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+    }
+}

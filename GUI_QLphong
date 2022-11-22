@@ -1,0 +1,144 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BUS;
+
+namespace BTL_QLKS
+{
+    public partial class GUI_QLPhong : Form
+    {
+        public GUI_QLPhong()
+        {
+            InitializeComponent();
+        }
+        Phong p = new Phong();
+        string ma;
+        public void Hienthi()
+        {
+            DataTable dt = new DataTable();
+            dt = p.hienthi_phong();
+            DGV_phong.DataSource = dt;
+        }
+        public void Xoa()
+        {
+            txtmaphong.Clear();
+            txttenphong.Clear();
+            txtgiaphong.Clear();
+            txtloaiphong.Clear();
+        }
+        private void btn_them_Click(object sender, EventArgs e)
+        {
+            if (txtmaphong.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã!");
+                txtmaphong.Focus();
+            }
+            else
+            {
+                try
+                {
+                    p.InsertPhong(this.txtmaphong.Text, this.txttenphong.Text, this.txtgiaphong.Text, this.txtloaiphong.Text);
+                    MessageBox.Show("Thêm thành công");
+                    Hienthi();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+        private void btn_sua_Click(object sender, EventArgs e)
+        {
+            if (txtmaphong.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã!!");
+                txtmaphong.Focus();
+            }
+            else
+            {
+                try
+                {
+                    p.UpdatePhong(this.txtmaphong.Text, this.txttenphong.Text, this.txtgiaphong.Text, this.txtloaiphong.Text, this.ma);
+                    MessageBox.Show("Sửa thành công");
+                    Hienthi();
+                    Xoa();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex);
+                }
+            }
+        }
+        private void btn_xoa_Click(object sender, EventArgs e)
+        {
+            if (txtmaphong.Text == "")
+            {
+                MessageBox.Show("Bạn chưa chọn mã!");
+                txtmaphong.Focus();
+            }
+            else
+            {
+                try
+                {
+                    if (MessageBox.Show("Bạn có chắc chắn xóa không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        p.DeletePhong(this.txtmaphong.Text);
+                        MessageBox.Show("Xóa thành công");
+                        Xoa();
+                        Hienthi();
+                    }
+                }
+                catch (Exception ex)
+                {
+MessageBox.Show("Lõi: " + ex);
+                }
+            }
+        }
+        private void btn_thoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        private void btn_timkiem_Click(object sender, EventArgs e)
+        {
+            if (txtkey.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập mã cần tìm");
+                Hienthi();
+            }
+            else
+            {
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt = p.Search(this.txtkey.Text);
+                    txtkey.Clear();
+                    DGV_phong.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi" + ex);
+                }
+            }
+        }
+        private void DGV_phong_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            int i = e.RowIndex;
+            ma = DGV_phong.Rows[i].Cells[0].Value.ToString();
+            txtmaphong.Text = DGV_phong.Rows[i].Cells[0].Value.ToString();
+            txttenphong.Text = DGV_phong.Rows[i].Cells[1].Value.ToString();
+            txtgiaphong.Text = DGV_phong.Rows[i].Cells[2].Value.ToString();
+            txtloaiphong.Text = DGV_phong.Rows[i].Cells[3].Value.ToString();
+        }
+        private void GUI_QLPhong_Load(object sender, EventArgs e)
+        {
+            Hienthi();
+        }
+    }
+}

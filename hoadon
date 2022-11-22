@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using DLA;
+
+namespace BUS
+{
+    public class HoaDon
+    {
+        DataStore da = new DataStore();
+        // Xử lý yêu cần thêm dữ liệu
+        public DataTable hienthi_hd()
+        {
+            string sql_ht = "select * from t_hd";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql_ht);
+            return dt;
+        }
+        public SqlDataReader Hienthi_hd()
+        {
+            string sql_cb = "select * from t_hd";
+            SqlDataReader dr;
+            dr = da.Get_DR(sql_cb);
+            return dr;
+        }
+        public void InsertHD(string mahd, string cbkh, string cbphong, string cbdv, string thanhtien)
+        {
+            string sql_add = "Insert into t_hd values(N'" + mahd + "',N'" + cbkh + "',N'" + cbphong + "',N'" + cbdv + "',N'" + thanhtien + "')";
+            da.ExecuteNonQuery(sql_add);
+        }
+        public void UpdateHD(string mahd, string cbkh, string cbphong, string cbdv, string thanhtien, string ma)
+        {
+            string sql_edit = "Update t_hd set mahd='" + mahd + "',cbkh='" + cbkh + "',cbphong='" + cbphong + "',cbdv='" + cbdv + "',thanhtien='" + thanhtien + "' where mahd='" + ma + "'";
+            da.ExecuteNonQuery(sql_edit);
+        }
+        public void DeleteHD(string mahd)
+        {
+            string sql_delete = "Delete From t_hd  where mahd = '" + mahd + "'";
+            da.ExecuteNonQuery(sql_delete);
+        }
+        public DataTable TimHD(string key)
+        {
+            string sql = "SELECT * FROM t_hd WHERE mahd LIKE '%" + key + "%'";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql);
+            return dt;
+        }
+    }
+}

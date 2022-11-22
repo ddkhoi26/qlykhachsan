@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+using DLA;
+
+namespace BUS
+{
+    public class KhachHang
+    {
+        DataStore da = new DataStore();
+        // Xử lý yêu cần thêm dữ liệu
+        public void InsertKH(string makh, string tenkh, string cmt, string tuoi, string gioitinh, string diachi, string email, string sdt)
+        {
+            string sql_add = "INSERT INTO t_kh VALUES('" + makh + "','" + tenkh + "','" + cmt + "','" + tuoi + "','" + gioitinh + "','" + diachi + "','" + email + "','" + sdt + "')";
+            da.ExecuteNonQuery(sql_add);
+        }
+        public void UpdateKH(string makh, string tenkh, string cmt, string tuoi, string gioitinh, string diachi, string email, string sdt, string ma)
+        {
+            string sql_update = "UPDATE t_kh SET tenkh = N'" + tenkh + "'',cmt = N'" + cmt + "'',tuoi = N'" + tuoi + "'',gioitinh = N'" + gioitinh + "'',diachi = N'" + diachi + "',email = N'" + email + "', sdt = '" + sdt + "', ma = '" + ma + "' where makh='" + makh + "'";
+            da.ExecuteNonQuery(sql_update);
+        }
+        public void DeleteKH(string makh)
+        {
+            string sql_delete = "DELETE t_kh WHERE makh = N'" + makh + "'";
+            da.ExecuteNonQuery(sql_delete);
+        }
+        public DataTable TimKH(string key)
+        {
+            string sql = "SELECT * FROM t_kh WHERE makh LIKE '%" + key + "%'";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql);
+            return dt;
+        }
+        public DataTable HienThi()
+        {
+            string sql = "SELECT * FROM t_kh";
+            DataTable dt = new DataTable();
+            dt = da.GetTable(sql);
+            return dt;
+        }
+    }
+}
